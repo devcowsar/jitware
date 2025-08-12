@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Jitware — Strategische Zichtbaarheid</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        /* Palette */
+        --grad-1: #6e44ff; /* violet */
+        --grad-2: #4fb6ec; /* cyan */
+        --accent: #ffb800; /* gold */
+        --bg: #f8f9fb;
+        --card: #ffffff;
+        --muted: #6b7280;
+        --text: #0b1220;
+        --glass: rgba(255, 255, 255, 0.65);
+        --glass-2: rgba(255, 255, 255, 0.06);
+        --shadow: 0 8px 30px rgba(16, 24, 40, 0.08);
+        --radius-lg: 18px;
+        --radius-md: 12px;
+        --transition: 300ms cubic-bezier(0.2, 0.9, 0.3, 1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial;
+        background: linear-gradient(180deg, var(--bg), #fff 60%);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        line-height: 1.4;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* Helpers */
+      .wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      .kicker {
+        font-weight: 600;
+        color: var(--muted);
+        font-size: 13px;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: "Playfair Display", serif;
+        font-weight: 700;
+        margin: 0;
+      }
+      h1 {
+        font-size: 44px;
+      }
+      h2 {
+        font-size: 28px;
+        margin: 0 0 18px 0;
+      }
+      p {
+        margin: 0 0 16px 0;
+        color: #374151;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      ul {
+        list-style: none;
+      }
+
+      /* Top nav */
+      header {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        z-index: 1000;
+      }
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.7rem 20px;
+        max-width: 1180px;
+        margin: 0 auto;
+      }
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #6e44ff, #4fb6ec);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      .nav-links a {
+        font-weight: 500;
+        transition: color 0.3s ease;
+        font-size: 15px;
+      }
+      .nav-links a:hover {
+        color: #6e44ff;
+      }
+      .search-bar {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border-radius: 50px;
+        padding: 0.3rem 0.7rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+      .search-bar input {
+        border: none;
+        outline: none;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.9rem;
+        min-width: 150px;
+      }
+      .search-bar button {
+        background: linear-gradient(90deg, #6e44ff, #4fb6ec);
+        border: none;
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.3s ease;
+        font-size: 14px;
+      }
+      .search-bar button:hover {
+        opacity: 0.85;
+      }
+
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: linear-gradient(90deg, var(--grad-1), var(--grad-2));
+        color: white;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-weight: 700;
+        box-shadow: 0 8px 30px rgba(79, 182, 236, 0.12);
+        transition: transform var(--transition), box-shadow var(--transition);
+        border: none;
+        cursor: pointer;
+        font-size: 15px;
+      }
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 40px rgba(79, 182, 236, 0.18);
+      }
+
+      /* HERO */
+      .hero {
+        background: linear-gradient(
+          140deg,
+          rgba(110, 68, 255, 0.96),
+          rgba(79, 182, 236, 0.95)
+        );
+        color: white;
+        padding: 64px 0 48px;
+        border-radius: 0 0 28px 28px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            800px 300px at 10% 20%,
+            rgba(255, 255, 255, 0.06),
+            transparent 15%
+          ),
+          radial-gradient(
+            600px 200px at 90% 80%,
+            rgba(255, 255, 255, 0.03),
+            transparent 15%
+          );
+        pointer-events: none;
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 420px;
+        gap: 28px;
+        align-items: center;
+      }
+      .hero-left {
+        padding: 32px 0;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(0, 0, 0, 0.08);
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.92);
+        margin-bottom: 18px;
+        font-size: 14px;
+      }
+      .hero-left h1 {
+        font-size: 44px;
+        line-height: 1.02;
+        margin-bottom: 12px;
+      }
+      .hero-left p {
+        opacity: 0.95;
+        font-size: 16px;
+        margin-bottom: 20px;
+        max-width: 600px;
+      }
+      .hero-ctas {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .btn-ghost {
+        padding: 12px 16px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.12);
+        color: white;
+        font-weight: 700;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: all var(--transition);
+        font-size: 15px;
+        cursor: pointer;
+      }
+      .btn-ghost:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.18);
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 700;
+        margin-top: 18px;
+        color: var(--accent);
+        font-size: 14px;
+      }
+
+      /* hero card */
+      .hero-card {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.98),
+          rgba(255, 255, 255, 0.95)
+        );
+        color: var(--text);
+        border-radius: 16px;
+        padding: 18px;
+        width: 100%;
+        box-shadow: var(--shadow);
+        transform: translateY(0);
+        transition: transform var(--transition);
+      }
+      .hero-card:hover {
+        transform: translateY(-6px);
+      }
+      .perf-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .perf-header h3 {
+        margin: 0;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .chart {
+        height: 140px;
+        border-radius: 10px;
+        background: linear-gradient(
+          90deg,
+          rgba(110, 68, 255, 0.06),
+          rgba(79, 182, 236, 0.06)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        font-weight: 700;
+        margin: 12px 0;
+      }
+      .kpis {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .kpi {
+        flex: 1;
+        min-width: 110px;
+        background: var(--glass);
+        padding: 10px;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: 700;
+        color: #0b1220;
+        box-shadow: 0 6px 18px rgba(11, 18, 32, 0.05);
+      }
+      .kpi small {
+        display: block;
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      /* sections */
+      section {
+        padding: 64px 0;
+      }
+      .section-title {
+        text-align: center;
+        margin-bottom: 28px;
+      }
+      .section-title p {
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .expert-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .expert-card {
+        background: white;
+        border-radius: 14px;
+        padding: 22px;
+        box-shadow: var(--shadow);
+        transition: all var(--transition);
+      }
+      .expert-card:hover {
+        transform: translateY(-6px);
+      }
+      .expert-card h4 {
+        margin-top: 6px;
+        margin-bottom: 10px;
+      }
+      .expert-list {
+        color: var(--muted);
+        font-size: 14px;
+        margin-top: 8px;
+        line-height: 1.6;
+      }
+
+      /* stats ribbon */
+      .stats {
+        background: linear-gradient(
+          90deg,
+          rgba(110, 68, 255, 0.06),
+          rgba(79, 182, 236, 0.06)
+        );
+        display: flex;
+        gap: 18px;
+        padding: 24px;
+        border-radius: 14px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .stat {
+        background: linear-gradient(180deg, white, rgba(255, 255, 255, 0.97));
+        min-width: 180px;
+        padding: 18px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
+      }
+      .stat h3 {
+        font-size: 26px;
+        color: var(--grad-1);
+        margin-bottom: 6px;
+      }
+      .stat p {
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      /* case studies */
+      .case-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .case {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        background: linear-gradient(180deg, #111827, #0f1724);
+        color: white;
+        height: 220px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 18px;
+        box-shadow: var(--shadow);
+        transition: transform var(--transition), box-shadow var(--transition);
+      }
+      .case:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 30px 60px rgba(2, 6, 23, 0.5);
+      }
+      .case .meta {
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--accent);
+        margin-bottom: 6px;
+      }
+      .case small {
+        color: rgba(255, 255, 255, 0.75);
+      }
+
+      /* insights */
+      .insights-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .insight {
+        background: white;
+        border-radius: 12px;
+        padding: 18px;
+        box-shadow: var(--shadow);
+        transition: all var(--transition);
+        overflow: hidden;
+      }
+      .insight img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 12px;
+      }
+      .insight:hover {
+        transform: translateY(-6px);
+      }
+
+      /* ai cards */
+      .ai-row {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+      .ai-card {
+        background: linear-gradient(180deg, white, rgba(255, 255, 255, 0.98));
+        padding: 18px;
+        border-radius: 12px;
+        flex: 1;
+        min-width: 210px;
+        box-shadow: var(--shadow);
+      }
+
+      /* tools & finance - simple */
+      .tools {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+      }
+      .tool-pill {
+        background: linear-gradient(
+          90deg,
+          rgba(110, 68, 255, 0.06),
+          rgba(79, 182, 236, 0.06)
+        );
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 700;
+        color: var(--grad-1);
+        font-size: 14px;
+      }
+
+      /* about */
+      .about {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 34px;
+        align-items: center;
+      }
+      .avatar {
+        width: 320px;
+        height: 420px;
+        border-radius: 14px;
+        background: linear-gradient(160deg, var(--grad-1), var(--grad-2));
+        display: flex;
+        align-items: flex-end;
+        padding: 18px;
+        color: white;
+        font-weight: 800;
+        box-shadow: var(--shadow);
+      }
+      .avatar small {
+        opacity: 0.9;
+        font-weight: 600;
+      }
+      .about p {
+        color: var(--muted);
+      }
+
+      /* contact */
+      .contact-wrap {
+        display: grid;
+        grid-template-columns: 1fr 420px;
+        gap: 28px;
+        align-items: start;
+      }
+      form {
+        background: white;
+        padding: 22px;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+      }
+      label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #e6e9ef;
+        margin-bottom: 12px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+      textarea {
+        resize: vertical;
+        min-height: 120px;
+      }
+      .contact-info {
+        background: linear-gradient(
+          180deg,
+          rgba(110, 68, 255, 0.06),
+          rgba(79, 182, 236, 0.05)
+        );
+        padding: 20px;
+        border-radius: 12px;
+      }
+      .contact-info h4 {
+        margin: 6px 0 12px 0;
+      }
+      .small-muted {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      /* footer */
+      footer {
+        padding: 40px 0;
+        background: #0b1220;
+        color: #e6eef9;
+        margin-top: 36px;
+      }
+      .footer-grid {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      /* testimonial tiny carousel */
+      .testi-wrap {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: center;
+      }
+      .testi-card {
+        width: 100%;
+        max-width: 800px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), white);
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .avatar-sm {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--grad-1), var(--grad-2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        flex-shrink: 0;
+      }
+      .testi-body p {
+        margin-bottom: 8px;
+        color: var(--muted);
+      }
+      .testi-controls {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 14px;
+      }
+
+      /* responsive */
+      @media (max-width: 1024px) {
+        .hero-grid {
+          grid-template-columns: 1fr 360px;
+        }
+        .case-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .expert-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .insights-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 780px) {
+        .navbar {
+          flex-direction: column;
+          gap: 1rem;
+          padding: 1rem 20px;
+        }
+        .nav-links {
+          gap: 1rem;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .search-bar {
+          width: 100%;
+          max-width: 400px;
+        }
+        .hero-left h1 {
+          font-size: 32px;
+        }
+        .hero-grid {
+          grid-template-columns: 1fr;
+          gap: 18px;
+        }
+        .hero-card {
+          order: 3;
+        }
+        .about {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        .avatar {
+          width: 100%;
+          max-width: 320px;
+          margin: 0 auto;
+        }
+        .contact-wrap {
+          grid-template-columns: 1fr;
+          gap: 18px;
+        }
+        section {
+          padding: 40px 0;
+        }
+        .case-grid {
+          grid-template-columns: 1fr;
+        }
+        .expert-grid {
+          grid-template-columns: 1fr;
+        }
+        .insights-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          padding: 36px 0 20px;
+          border-radius: 0 0 18px 18px;
+        }
+      }
+      @media (max-width: 480px) {
+        .hero-left h1 {
+          font-size: 28px;
+        }
+        .hero-ctas {
+          flex-direction: column;
+          width: 100%;
+        }
+        .hero-ctas .btn-primary,
+        .hero-ctas .btn-ghost {
+          width: 100%;
+          text-align: center;
+          justify-content: center;
+        }
+        .kpis {
+          flex-direction: column;
+        }
+        .kpi {
+          width: 100%;
+        }
+      }
+
+      /* small animations */
+      .fade-up {
+        opacity: 0;
+        transform: translateY(10px);
+        animation: fadeUp 0.7s forwards;
+      }
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="navbar">
+        <div class="logo">Jitware</div>
+        <nav class="nav-links">
+          <a href="#">Home</a>
+          <a href="#expertise">Services</a>
+          <a href="#cases">Case Studies</a>
+          <a href="#insights">Insights</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <div class="search-bar">
+          <input type="text" placeholder="Search..." />
+          <button>Go</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-left">
+          <div class="eyebrow">
+            Meer klanten dankzij strategische zichtbaarheid
+          </div>
+          <h1 class="fade-up" style="animation-delay: 120ms">
+            Wij combineren webdesign, SEO en AI om jouw online groei te
+            versnellen
+          </h1>
+          <p class="fade-up" style="animation-delay: 160ms">
+            Van technische SEO tot creatieve content en slimme AI-workflows —
+            wij bouwen groeiende digitale ecosystemen die bezoekers converteren.
+          </p>
+
+          <div class="hero-ctas fade-up" style="animation-delay: 200ms">
+            <a class="btn-primary" href="#contact"
+              >Vraag een gratis strategiegesprek</a
+            >
+            <a class="btn-ghost" href="#cases">Bekijk onze cases</a>
+            <a class="btn-ghost" href="#expertise">Onze expertises</a>
+          </div>
+
+          <div class="badge fade-up" style="animation-delay: 260ms">
+            ⭐ 4.9/5 — 345+ tevreden klanten
+          </div>
+        </div>
+
+        <div style="align-self: center">
+          <div class="hero-card fade-up" style="animation-delay: 300ms">
+            <div class="perf-header">
+              <h3>Performance Dashboard</h3>
+              <small class="small-muted">Laatste 6 maanden</small>
+            </div>
+            <div class="chart">Interactive graph preview</div>
+
+            <div class="kpis">
+              <div class="kpi">+75%<small>Meer bezoekers</small></div>
+              <div class="kpi">
+                Positie 1–3<small>Top resultaten in Google</small>
+              </div>
+              <div class="kpi">5–20%<small>Meer conversies</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section
+      class="wrap"
+      aria-label="Klantbeoordelingen"
+      style="padding-top: 40px"
+    >
+      <div class="section-title">
+        <div class="kicker">Klant verhalen</div>
+        <h2 style="margin-top: 8px">Wat klanten zeggen</h2>
+        <p style="color: var(--muted)">
+          Echte resultaten van echte klanten. Onze aanpak richt zich op duurzame
+          groei.
+        </p>
+      </div>
+
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+          margin-top: 18px;
+        "
+      >
+        <div class="testi-wrap">
+          <div class="testi-card" id="testiCard">
+            <div class="avatar-sm">AA</div>
+            <div style="flex: 1" class="testi-body">
+              <strong>Adem Karimi — CEO, HotelLux</strong>
+              <p>
+                "Jitware heeft onze organische zoekresultaten in 6 maanden naar
+                page 1 gebracht. De samenwerking was duidelijk, hands-on en
+                resultaatgericht."
+              </p>
+              <div
+                style="
+                  display: flex;
+                  gap: 10px;
+                  align-items: center;
+                  color: var(--muted);
+                  font-weight: 700;
+                "
+              >
+                <span>★★★★★</span>
+                <small class="small-muted">— 6 maanden</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-controls">
+          <button class="btn-ghost" id="prevTesti">Vorige</button>
+          <button class="btn-ghost" id="nextTesti">Volgende</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Expertises -->
+    <section id="expertise" class="wrap" style="padding-top: 48px">
+      <div class="section-title">
+        <div class="kicker">Onze expertises</div>
+        <h2>Alles wat je nodig hebt voor digitale groei</h2>
+        <p style="color: var(--muted)">
+          Strategie, creatie en slimme technologie — samengebracht in één
+          aanpak.
+        </p>
+      </div>
+
+      <div class="expert-grid">
+        <div class="expert-card fade-up" style="animation-delay: 80ms">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <div
+              style="
+                width: 56px;
+                height: 56px;
+                border-radius: 12px;
+                background: linear-gradient(
+                  135deg,
+                  var(--grad-1),
+                  var(--grad-2)
+                );
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: 800;
+              "
+            >
+              SEO
+            </div>
+            <div>
+              <h4>SEO & webstrategie</h4>
+              <div class="expert-list">
+                - Technische SEO & contentplanning<br />
+                - Zoekwoorden & concurrentieanalyse<br />
+                - On-page optimalisatie & linkbuilding
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="expert-card fade-up" style="animation-delay: 140ms">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <div
+              style="
+                width: 56px;
+                height: 56px;
+                border-radius: 12px;
+                background: linear-gradient(135deg, var(--accent), #ff7a00);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: 800;
+              "
+            >
+              VID
+            </div>
+            <div>
+              <h4>Video & grafisch ontwerp</h4>
+              <div class="expert-list">
+                - Branded video content<br />
+                - Visual identity & webdesign<br />
+                - Campagne assets & animaties
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="expert-card fade-up" style="animation-delay: 200ms">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <div
+              style="
+                width: 56px;
+                height: 56px;
+                border-radius: 12px;
+                background: linear-gradient(135deg, #00c2a8, #4fb6ec);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: 800;
+              "
+            >
+              AI
+            </div>
+            <div>
+              <h4>AI-oplossingen</h4>
+              <div class="expert-list">
+                - AI-gestuurde contentoptimalisatie<br />
+                - Automatisering van repetitieve taken<br />
+                - Predictieve analyses & personalisatie
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section class="wrap" aria-labelledby="results" style="padding-top: 28px">
+      <div class="section-title">
+        <div class="kicker">Resultaten waar het écht om draait</div>
+        <h2 id="results">We meten ons succes aan de hand van jouw groei</h2>
+      </div>
+
+      <div class="stats" style="margin-top: 18px">
+        <div class="stat">
+          <h3>+75%</h3>
+          <p>Meer bezoekers</p>
+        </div>
+        <div class="stat">
+          <h3>Positie 1–3</h3>
+          <p>Top Google rankings</p>
+        </div>
+        <div class="stat">
+          <h3>5–20%</h3>
+          <p>Conversieverbetering</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Case studies -->
+    <section id="cases" class="wrap" style="padding-top: 48px">
+      <div class="section-title">
+        <div class="kicker">Case studies</div>
+        <h2>Zij groeiden dankzij onze aanpak</h2>
+      </div>
+
+      <div class="case-grid" style="margin-top: 18px">
+        <div
+          class="case"
+          style="
+            background-image: linear-gradient(
+                180deg,
+                rgba(0, 0, 0, 0.18),
+                rgba(0, 0, 0, 0.42)
+              ),
+              url('https://images.unsplash.com/photo-1558980394-0c6f2fdd2b28?auto=format&fit=crop&w=1200&q=60');
+            background-size: cover;
+            background-position: center;
+          "
+        >
+          <div class="meta">Dokkeren Van den Dynske</div>
+          <h3>Top 3 resultaat in 90 dagen</h3>
+          <small
+            >Verhoogde organische zoekopdrachten en lokale boekingen.</small
+          >
+        </div>
+
+        <div
+          class="case"
+          style="
+            background-image: linear-gradient(
+                180deg,
+                rgba(0, 0, 0, 0.18),
+                rgba(0, 0, 0, 0.42)
+              ),
+              url('https://images.unsplash.com/photo-1565182999561-3a3d2b03ab2b?auto=format&fit=crop&w=1200&q=60');
+            background-size: cover;
+            background-position: center;
+          "
+        >
+          <div class="meta">De Donker</div>
+          <h3>+63% conversie</h3>
+          <small>Verbeterde UX & checkout flow voor hogere omzet.</small>
+        </div>
+
+        <div
+          class="case"
+          style="
+            background-image: linear-gradient(
+                180deg,
+                rgba(0, 0, 0, 0.18),
+                rgba(0, 0, 0, 0.42)
+              ),
+              url('https://images.unsplash.com/photo-1542317854-7f1a5f81b3ad?auto=format&fit=crop&w=1200&q=60');
+            background-size: cover;
+            background-position: center;
+          "
+        >
+          <div class="meta">Otentik Wellness</div>
+          <h3>Groei in boekingen</h3>
+          <small
+            >Lokale SEO en contentstrategie verhoogden zichtbaarheid.</small
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Insights -->
+    <section id="insights" class="wrap" style="padding-top: 48px">
+      <div class="section-title">
+        <div class="kicker">Laatste inzichten & tips</div>
+        <h2>Blijf op de hoogte van digitale trends en strategieën</h2>
+      </div>
+
+      <div class="insights-grid" style="margin-top: 18px">
+        <article class="insight fade-up" style="animation-delay: 80ms">
+          <img
+            src="https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&w=1200&q=60"
+            alt="nieuws thumbnail"
+          />
+          <h4>Nieuwe klanten, waar je ze vindt</h4>
+          <p class="small-muted">
+            Praktische stappen voor meer zichtbaarheid in 2025.
+          </p>
+          <a
+            href="#"
+            style="
+              font-weight: 800;
+              margin-top: 10px;
+              display: inline-block;
+              color: var(--grad-1);
+            "
+            >Lees meer →</a
+          >
+        </article>
+
+        <article class="insight fade-up" style="animation-delay: 140ms">
+          <img
+            src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=60"
+            alt="seo thumbnail"
+          />
+          <h4>Slimmer groeien met AI</h4>
+          <p class="small-muted">
+            Gebruik AI voor contentproductie en A/B testing.
+          </p>
+          <a
+            href="#"
+            style="
+              font-weight: 800;
+              margin-top: 10px;
+              display: inline-block;
+              color: var(--grad-1);
+            "
+            >Lees meer →</a
+          >
+        </article>
+
+        <article class="insight fade-up" style="animation-delay: 200ms">
+          <img
+            src="https://images.unsplash.com/photo-1508385082359-f11a14a1aef6?auto=format&fit=crop&w=1200&q=60"
+            alt="tips"
+          />
+          <h4>Maak je eigen AI workflows</h4>
+          <p class="small-muted">
+            Praktische templates en voorbeelden voor bedrijven.
+          </p>
+          <a
+            href="#"
+            style="
+              font-weight: 800;
+              margin-top: 10px;
+              display: inline-block;
+              color: var(--grad-1);
+            "
+            >Lees meer →</a
+          >
+        </article>
+      </div>
+    </section>
+
+    <!-- AI Growth -->
+    <section class="wrap" style="padding-top: 36px">
+      <div class="section-title">
+        <div class="kicker">Slimmer groeien met AI</div>
+        <h2>Automatiseer en schaal met slimme tools</h2>
+      </div>
+
+      <div class="ai-row" style="margin-top: 18px">
+        <div class="ai-card fade-up" style="animation-delay: 80ms">
+          <h4>AI content generator</h4>
+          <p class="small-muted">
+            Snel ideeën, meta descriptions en A/B-teksten genereren.
+          </p>
+          <ul style="margin-top: 10px; color: var(--muted); line-height: 1.6">
+            <li>Sneller content produceren</li>
+            <li>Consistente merkstijl</li>
+          </ul>
+        </div>
+
+        <div class="ai-card fade-up" style="animation-delay: 140ms">
+          <h4>Conversie-optimalisatie</h4>
+          <p class="small-muted">
+            Gebruik data om funnels op schaal te verbeteren.
+          </p>
+          <ul style="margin-top: 10px; color: var(--muted); line-height: 1.6">
+            <li>A/B testautomatisering</li>
+            <li>Predictive UX-aanbevelingen</li>
+          </ul>
+        </div>
+
+        <div class="ai-card fade-up" style="animation-delay: 200ms">
+          <h4>Analytics & groei</h4>
+          <p class="small-muted">
+            Dashboards met heldere KPI's en aanbevelingen.
+          </p>
+          <ul style="margin-top: 10px; color: var(--muted); line-height: 1.6">
+            <li>Helder inzichtenrapport</li>
+            <li>Data-gedreven roadmap</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tools & Finance -->
+    <section class="wrap" style="padding-top: 36px">
+      <div style="text-align: center; margin-bottom: 18px">
+        <div class="kicker">gratis tools</div>
+        <h2>Handige tools & financiële inzichten</h2>
+        <p class="small-muted">
+          Gebruik onze gratis tools om je digitale strategie te sturen.
+        </p>
+      </div>
+
+      <div class="tools">
+        <div class="tool-pill">SEO Checker</div>
+        <div class="tool-pill">ROI Calculator</div>
+        <div class="tool-pill">Keyword Planner</div>
+        <div class="tool-pill">Content Idea Generator</div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="wrap" style="padding-top: 48px">
+      <div class="section-title">
+        <div class="kicker">Wie we zijn</div>
+        <h2>Waarom we dit doen</h2>
+      </div>
+
+      <div class="about" style="margin-top: 18px">
+        <div class="avatar fade-up" style="animation-delay: 80ms">
+          <div style="flex: 1">
+            <div style="font-size: 22px">Cowsar Ahmed</div>
+            <small>Oprichter & Digital Strategist</small>
+          </div>
+        </div>
+
+        <div class="fade-up" style="animation-delay: 140ms">
+          <p>
+            Wij geloven dat slimme digitale marketing, gecombineerd met
+            technische kennis en creatieve uitvoering, het verschil maakt. Ons
+            team helpt merken van verschillende groottes — van hotels tot lokale
+            retailers — om meetbare groei te realiseren.
+          </p>
+          <p class="small-muted">
+            We combineren bewezen SEO-praktijken, conversiegericht design en
+            AI-gestuurde processen om duurzame resultaten te bouwen.
+          </p>
+
+          <div style="margin-top: 14px; display: flex; gap: 12px">
+            <a class="btn-primary" href="#contact">Plan een gesprek</a>
+            <a class="btn-ghost" href="#cases">Bekijk cases</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="wrap" style="padding-top: 48px">
+      <div class="section-title">
+        <div class="kicker">Klaar om meer bezoekers te krijgen?</div>
+        <h2>Neem contact op — we helpen je graag verder</h2>
+      </div>
+
+      <div class="contact-wrap" style="margin-top: 18px">
+        <form
+          onsubmit="event.preventDefault();alert('Dank! Je formulier is verzonden (demo).')"
+        >
+          <label for="name">Naam</label>
+          <input id="name" name="name" placeholder="Jouw naam" required />
+
+          <label for="email">E-mail</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="naam@bedrijf.nl"
+            required
+          />
+
+          <label for="company">Bedrijfsnaam</label>
+          <input
+            id="company"
+            name="company"
+            placeholder="Naam van je bedrijf"
+          />
+
+          <label for="message">Hoe kunnen we helpen?</label>
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            placeholder="Beschrijf je vraag of doel..."
+            required
+          ></textarea>
+
+          <div style="display: flex; gap: 12px; align-items: center">
+            <button class="btn-primary" type="submit">
+              Vraag gratis strategiegesprek
+            </button>
+            <button type="reset" class="btn-ghost">Wissen</button>
+          </div>
+        </form>
+
+        <aside class="contact-info fade-up" style="animation-delay: 120ms">
+          <h4>Contactgegevens</h4>
+          <p class="small-muted">We reageren doorgaans binnen 24 uur.</p>
+          <p style="margin-top: 12px">
+            <strong>Email</strong><br /><a href="mailto:hello@jitware.example"
+              >hello@jitware.example</a
+            >
+          </p>
+          <p style="margin-top: 8px">
+            <strong>Telefoon</strong><br />+31 6 1234 5678
+          </p>
+
+          <hr
+            style="
+              margin: 18px 0;
+              border: none;
+              border-top: 1px solid rgba(11, 18, 32, 0.06);
+            "
+          />
+
+          <div>
+            <strong>Locatie</strong>
+            <p class="small-muted">Amsterdam, Nederland</p>
+          </div>
+
+          <div style="margin-top: 12px">
+            <strong>Volg ons</strong>
+            <p class="small-muted">LinkedIn · Instagram · Twitter</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="wrap footer-grid">
+        <div style="display: flex; align-items: center; gap: 14px">
+          <div
+            class="avatar-sm"
+            style="width: 56px; height: 56px; font-size: 22px"
+          >
+            Jt
+          </div>
+          <div>
+            <div style="font-weight: 800">Jitware</div>
+            <div style="font-size: 13px; color: rgba(230, 238, 249, 0.8)">
+              Strategische zichtbaarheid & digitale groei
+            </div>
+          </div>
+        </div>
+
+        <div style="color: rgba(230, 238, 249, 0.85)">
+          © <span id="year"></span> Jitware — Alle rechten voorbehouden
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Small date
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Testimonial carousel (demo with 3 variants)
+      const testiCard = document.getElementById("testiCard");
+      const prevBtn = document.getElementById("prevTesti");
+      const nextBtn = document.getElementById("nextTesti");
+
+      const testimonials = [
+        {
+          who: "Adem Karimi — CEO, HotelLux",
+          text: "“Jitware heeft onze organische zoekresultaten in 6 maanden naar page 1 gebracht. De samenwerking was duidelijk, hands-on en resultaatgericht.”",
+          small: "★★★★★ — 6 maanden",
+        },
+        {
+          who: "Marijke van Gemert — Marketing, De Donker",
+          text: "“Door een nieuwe structuur en conversie-gericht ontwerp steeg onze checkout conversie met 63%.”",
+          small: "★★★★★ — 3 maanden",
+        },
+        {
+          who: "Sofie Peters — Manager, Otentik Wellness",
+          text: "“Lokale SEO en contentstrategie zorgden voor consistente boekingen gedurende het hele jaar.”",
+          small: "★★★★★ — 5 maanden",
+        },
+      ];
+
+      let idx = 0;
+      function renderTesti(i) {
+        const t = testimonials[i];
+        testiCard.innerHTML = `
+      <div class="avatar-sm">${t.who
+        .split(" ")[0]
+        .slice(0, 2)
+        .toUpperCase()}</div>
+      <div style="flex:1">
+        <strong>${t.who}</strong>
+        <p style="margin-top:8px;color:var(--muted)">${t.text}</p>
+        <div style="display:flex;gap:10px;align-items:center;color:var(--muted);font-weight:700;">
+          <span>${t.small.split(" — ")[0]}</span>
+          <small class="small-muted">— ${t.small.split(" — ")[1]}</small>
+        </div>
+      </div>
+    `;
+      }
+      renderTesti(idx);
+
+      prevBtn.addEventListener("click", () => {
+        idx = (idx - 1 + testimonials.length) % testimonials.length;
+        renderTesti(idx);
+      });
+      nextBtn.addEventListener("click", () => {
+        idx = (idx + 1) % testimonials.length;
+        renderTesti(idx);
+      });
+
+      // Reveal animations on load
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".fade-up").forEach((el, i) => {
+          el.style.animationDelay = i * 70 + "ms";
+          el.classList.add("fade-up");
+        });
+      });
+    </script>
+  </body>
+</html>
